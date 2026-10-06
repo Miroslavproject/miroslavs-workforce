@@ -193,6 +193,16 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 16px;
 .how-art svg:nth-of-type(3) { animation-delay: -1s; }
 .how-art svg.arrow { flex: 0 0 clamp(20px, 5vw, 36px); max-width: 36px; filter: none; animation: arrowpulse 1.2s steps(1, end) infinite; }
 @keyframes arrowpulse { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+/* Orange ball that hops between the skill cards while scrolling, and tucks behind a card when you leave */
+.catalog { position: relative; gap: 30px; }
+.item { position: relative; z-index: 1; }
+.hopper { position: absolute; z-index: 0; right: clamp(20px, 7%, 84px); top: 0; width: 24px; height: 24px; pointer-events: none; transition: top .5s cubic-bezier(.45,.05,.3,1); }
+.hopper.pop { transition: top .38s cubic-bezier(.3,1.7,.5,1); }
+.hopper.snap { transition: none; }
+.hopper i { display: block; width: 100%; height: 100%; border-radius: 50%; background: radial-gradient(circle at 32% 26%, #fff6 0 9%, transparent 10%), radial-gradient(circle at 36% 30%, var(--accent-hi), var(--accent) 58%, var(--accent-lo)); box-shadow: 0 3px 6px rgba(0,0,0,.28), inset 0 -3px 5px rgba(0,0,0,.22); transform-origin: 50% 100%; }
+.hopper.hop i { animation: hopball .5s ease-out; }
+@keyframes hopball { 0% { transform: translateY(0) scaleY(.85) scaleX(1.12); } 35% { transform: translateY(-34px) scale(1); } 70% { transform: translateY(0) scale(1); } 85% { transform: scaleY(.82) scaleX(1.14); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .hopper, .hopper.pop { transition: none; } .hopper.hop i { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .how-art svg, .how-art svg.arrow { animation: none; } .item, .item:hover { transition: none; transform: none; } .btn { transition: none; } }
 
 .salebar { padding: 0; background: linear-gradient(180deg, var(--accent-hi), var(--accent)); border-bottom: 3px solid var(--accent-lo); box-shadow: 0 6px 16px -6px rgba(0,0,0,.45); font-size: 0.92rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; position: sticky; }
@@ -523,6 +533,52 @@ function renderItem(p) {
 
 const catalog = document.getElementById("catalog");
 PRODUCTS.forEach(function (p) { catalog.appendChild(renderItem(p)); });
+
+/* Hopping ball: sits on the card nearest the middle of the screen, hops to the next one on scroll,
+   and slips behind its card when the skills are out of view. */
+(function () {
+  const items = Array.prototype.slice.call(catalog.children);
+  if (!items.length) return;
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ball = el("div", { "class": "hopper", "aria-hidden": "true" }, [el("i", {})]);
+  catalog.insertBefore(ball, catalog.firstChild);
+  let cur = 0, shown = false, ticking = false, started = false;
+  const up = function (i) { return items[i].offsetTop - 20; };
+  const hid = function (i) { return items[i].offsetTop + 4; };
+  function place(i, visible) { ball.style.top = (visible ? up(i) : hid(i)) + "px"; }
+  function nearest() {
+    const mid = window.innerHeight * 0.45; let best = 0, bd = 1e9;
+    items.forEach(function (it, i) {
+      const r = it.getBoundingClientRect(), d = Math.abs((r.top + r.bottom) / 2 - mid);
+      if (d < bd) { bd = d; best = i; }
+    });
+    return best;
+  }
+  function update() {
+    ticking = false;
+    const r = catalog.getBoundingClientRect(), vh = window.innerHeight;
+    const inView = r.top < vh * 0.7 && r.bottom > vh * 0.3;
+    const idx = nearest();
+    if (!inView) {
+      if (shown || !started) { shown = false; started = true; ball.classList.remove("snap"); ball.classList.add("pop"); place(cur, false); }
+      return;
+    }
+    if (!shown) {
+      cur = idx; ball.classList.add("snap"); place(cur, false); void ball.offsetHeight;
+      ball.classList.remove("snap"); ball.classList.add("pop"); shown = true; started = true; place(cur, true);
+      return;
+    }
+    if (idx !== cur) {
+      cur = idx; ball.classList.remove("pop");
+      if (!reduce) { ball.classList.remove("hop"); void ball.offsetWidth; ball.classList.add("hop"); }
+      place(cur, true);
+    }
+  }
+  function req() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener("scroll", req, { passive: true });
+  window.addEventListener("resize", function () { place(cur, shown); req(); });
+  place(0, false); update();
+})();
 
 /* Filter podľa témy sa zobrazí, keď bude v katalógu viac ako 4 skilly. */
 if (PRODUCTS.length > 4) {
