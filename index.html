@@ -174,6 +174,26 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 16px;
 .crew-ctrl button:hover { background: var(--chip); }
 .crew-ctrl .wave { font-family: var(--font-mono); font-size: .8rem; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .mate, .mate .sprite { transition: none; } .mate.working { transform: none; } .mate.working .sprite { animation: none; } }
+
+:root { --accent-hi: #E0701F; --accent-lo: #8F3608; --glow: rgba(232, 99, 26, 0.18); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent-hi: #FFB27A; --accent-lo: #B8541C; --glow: rgba(242, 139, 80, 0.16); } }
+:root[data-theme="dark"] { --accent-hi: #FFB27A; --accent-lo: #B8541C; --glow: rgba(242, 139, 80, 0.16); }
+.hero { position: relative; }
+.hero::before { content: ""; position: absolute; z-index: -1; left: -10%; top: -20%; width: 70%; height: 120%; background: radial-gradient(closest-side, var(--glow), transparent 70%); pointer-events: none; }
+.btn:not(:disabled):not([aria-disabled="true"]) { background: linear-gradient(180deg, var(--accent-hi), var(--accent)); border-color: var(--accent-lo); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 3px 0 var(--accent-lo), 0 8px 14px -6px rgba(0,0,0,.35); transition: transform .12s ease, box-shadow .12s ease; }
+.btn:not(:disabled):not([aria-disabled="true"]):hover { transform: translateY(-1px); filter: none; }
+.btn:not(:disabled):not([aria-disabled="true"]):active { transform: translateY(3px); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 0 0 var(--accent-lo); }
+.badge { background: linear-gradient(180deg, var(--accent-hi), var(--accent)); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 2px 0 var(--accent-lo); }
+.item { box-shadow: 0 1px 0 var(--line), 0 14px 26px -16px rgba(38, 28, 21, .45); transition: transform .2s ease, box-shadow .2s ease; }
+.item:hover { transform: translateY(-3px); box-shadow: 0 1px 0 var(--line), 0 22px 34px -16px rgba(38, 28, 21, .5); }
+.sprite { filter: drop-shadow(0 3px 0 rgba(0,0,0,.16)) drop-shadow(0 8px 5px rgba(0,0,0,.2)); }
+.how-art { display: flex; align-items: center; justify-content: center; gap: clamp(6px, 2vw, 18px); padding: clamp(16px, 3vw, 28px); margin: 0 0 24px; background: linear-gradient(180deg, var(--surface), var(--chip)); border: 1px solid var(--line); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 18px 30px -20px rgba(38,28,21,.5); }
+.how-art svg { display: block; flex: 0 1 190px; width: 100%; max-width: 190px; height: auto; shape-rendering: crispEdges; filter: drop-shadow(0 3px 0 rgba(0,0,0,.14)) drop-shadow(0 10px 6px rgba(0,0,0,.18)); animation: spritebob 1.6s steps(1, end) infinite; }
+.how-art svg:nth-of-type(2) { animation-delay: -.5s; }
+.how-art svg:nth-of-type(3) { animation-delay: -1s; }
+.how-art svg.arrow { flex: 0 0 clamp(20px, 5vw, 36px); max-width: 36px; filter: none; animation: arrowpulse 1.2s steps(1, end) infinite; }
+@keyframes arrowpulse { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+@media (prefers-reduced-motion: reduce) { .how-art svg, .how-art svg.arrow { animation: none; } .item, .item:hover { transition: none; transform: none; } .btn { transition: none; } }
 </style>
 </head>
 <body>
@@ -212,6 +232,7 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 16px;
 
   <section aria-labelledby="h-how">
     <h2 id="h-how">How it works</h2>
+    <figure class="how-art" id="how-art" aria-hidden="true"></figure>
     <ol class="steps">
       <li><strong>Pick a skill</strong><span>Read what it does and hit Buy.</span></li>
       <li><strong>Pay with Stripe</strong><span>Card payment on Stripe's secure checkout.</span></li>
@@ -363,29 +384,79 @@ const OFFER_END = new Date("2026-10-31T23:59:59");
   if (bar && left > 0 && left <= 30 && PRODUCTS.some(function (x) { return x.price && x.regularPrice; })) bar.hidden = false;
 })();
 /* Pixel mascots, one per skill. Letters map to the colors below. */
-const SPRITE_COLORS = { B: "var(--accent)", D: "#2A1C12", W: "#FFFFFF", Y: "#F2B84B", A: "#F4A777", S: "#F6C9A8" };
+const SPRITE_COLORS = { B: "#E8631A", D: "#2A1C12", W: "#FFFFFF", Y: "#F2B84B", A: "#F4A777", S: "#F6C9A8", K: "#3A4A7A", G: "#5BA37B", L: "#FF9A4D", O: "#E8631A" };
 const SPRITES = {
   "clients": ["..Y..Y..Y..", "..YYYYYYY..", ".BBBBBBBBB.", ".BBBBBBBBB.", ".BWDBBBWDB.", ".BBBBBBBBB.", ".BBBDDDBBB.", ".BBBBBBBBB.", "..BBBBBBB..", "..BB...BB..", "..DD...DD.."],
   "clone": [".BBBB...AAAA.", "BBBBBB.AAAAAA", "BDBBDB.ADAADA", "BBBBBB.AAAAAA", "BBDDBB.AADDAA", ".BBBB...AAAA.", ".B..B...A..A.", ".D..D...D..D."],
   "site-builder": ["...YYYYY...", "..YYYYYYY..", ".YYYYYYYYY.", ".BBBBBBBBB.", ".BWDBBBWDB.", ".BBBBBBBBB.", ".BBBDDDBBB.", "..BBBBBBB..", "..BB...BB..", "..DD...DD.."],
   "clothes-designer": ["...BBBBB...", "..BBBBBBB..", ".BBSSSSSBB.", ".BSWDSWDSB.", ".BSSSSSSSB.", ".BBSDDDSBB.", "BBBBSSSBBBB", "BBBBYBYBBBB", ".BBBBBBBBB.", "..BB...BB..", "..DD...DD.."]
 };
-function makeSprite(id, delay) {
-  const rows = SPRITES[id]; if (!rows) return null;
+/* Shaded pixel renderer: light edge on top and left, darker edge on bottom and right, plus a glossy spot. */
+function mixHex(hex, t) {
+  const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+  const to = t > 0 ? 255 : 0, k = Math.abs(t);
+  r = Math.round(r + (to - r) * k); g = Math.round(g + (to - g) * k); b = Math.round(b + (to - b) * k);
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+function pixSvg(rows, cls, gloss) {
   const NS = "http://www.w3.org/2000/svg", w = rows[0].length, h = rows.length;
   const svg = document.createElementNS(NS, "svg");
-  svg.setAttribute("viewBox", "0 0 " + w + " " + h); svg.setAttribute("class", "sprite");
-  svg.setAttribute("aria-hidden", "true"); svg.style.animationDelay = (delay * -0.3) + "s";
+  svg.setAttribute("viewBox", "0 0 " + w + " " + h); if (cls) svg.setAttribute("class", cls); svg.setAttribute("aria-hidden", "true");
+  const empty = function (x, y) { return y < 0 || y >= h || x < 0 || x >= rows[y].length || !SPRITE_COLORS[rows[y][x]]; };
+  const FLAT = { D: 1, W: 1 };
+  function rect(x, y, ww, hh, fill, op) {
+    const r = document.createElementNS(NS, "rect");
+    r.setAttribute("x", x); r.setAttribute("y", y); r.setAttribute("width", ww); r.setAttribute("height", hh); r.setAttribute("fill", fill);
+    if (op) r.setAttribute("opacity", op); svg.appendChild(r);
+  }
+  let bodyTop = -1;
   rows.forEach(function (row, y) {
+    let filled = 0;
     for (let x = 0; x < row.length; x++) {
-      const c = SPRITE_COLORS[row[x]]; if (!c) continue;
-      const r = document.createElementNS(NS, "rect");
-      r.setAttribute("x", x); r.setAttribute("y", y); r.setAttribute("width", 1.02); r.setAttribute("height", 1.02); r.setAttribute("fill", c);
-      svg.appendChild(r);
+      const ch = row[x], c = SPRITE_COLORS[ch]; if (!c) continue;
+      filled++;
+      let fill = c;
+      if (!FLAT[ch]) {
+        if (empty(x, y - 1)) fill = mixHex(c, 0.28);
+        else if (empty(x - 1, y)) fill = mixHex(c, 0.14);
+        else if (empty(x, y + 1)) fill = mixHex(c, -0.28);
+        else if (empty(x + 1, y)) fill = mixHex(c, -0.16);
+      }
+      rect(x, y, 1.02, 1.02, fill);
     }
+    if (bodyTop < 0 && filled >= 8) bodyTop = y;
   });
+  if (gloss && bodyTop >= 0) {
+    const first = rows[bodyTop].split("").findIndex(function (ch) { return SPRITE_COLORS[ch]; });
+    rect(first + 1.1, bodyTop + 0.55, 2.2, 0.5, "#FFFFFF", 0.5);
+  }
   return svg;
 }
+function makeSprite(id, delay) {
+  const rows = SPRITES[id]; if (!rows) return null;
+  const svg = pixSvg(rows, "sprite", true); svg.style.animationDelay = (delay * -0.3) + "s"; return svg;
+}
+/* How-it-works picture: pick a skill, pay, add it to Claude. */
+(function () {
+  const host = document.getElementById("how-art"); if (!host) return;
+  function grid(w, h) { const g = []; for (let y = 0; y < h; y++) g.push(new Array(w).fill(".")); return g; }
+  function fill(g, x, y, w, h, ch) { for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) if (g[j] && i < g[j].length) g[j][i] = ch; }
+  const out = function (g) { return g.map(function (r) { return r.join(""); }); };
+  // 1: a product card with a price tag
+  const a = grid(18, 14);
+  fill(a, 1, 1, 16, 12, "D"); fill(a, 2, 2, 14, 10, "W"); fill(a, 3, 3, 12, 5, "O"); fill(a, 4, 4, 3, 2, "L");
+  fill(a, 8, 5, 6, 2, "Y"); fill(a, 3, 9, 7, 1, "D"); fill(a, 3, 11, 5, 1, "D"); fill(a, 11, 9, 4, 3, "Y"); fill(a, 12, 10, 2, 1, "D");
+  // 2: a payment card
+  const b = grid(18, 14);
+  fill(b, 1, 3, 16, 10, "D"); fill(b, 2, 4, 14, 8, "K"); fill(b, 2, 6, 14, 2, "D"); fill(b, 3, 9, 3, 2, "Y"); fill(b, 8, 10, 6, 1, "W"); fill(b, 14, 2, 3, 3, "G"); fill(b, 15, 1, 1, 1, "G");
+  // 3: the skill file, added to Claude
+  const c = grid(18, 14);
+  fill(c, 3, 1, 10, 12, "D"); fill(c, 4, 2, 8, 10, "W"); fill(c, 9, 1, 4, 4, "D"); fill(c, 10, 2, 2, 2, "L"); fill(c, 5, 6, 6, 3, "O"); fill(c, 6, 7, 2, 1, "L"); fill(c, 5, 10, 5, 1, "D");
+  fill(c, 11, 8, 6, 5, "G"); fill(c, 12, 10, 1, 1, "W"); fill(c, 13, 11, 1, 1, "W"); fill(c, 14, 10, 1, 1, "W"); fill(c, 15, 9, 1, 1, "W");
+  const arrow = ["...O...", "...OO..", "OOOOOO.", "OOOOOOO", "OOOOOO.", "...OO..", "...O..."];
+  host.appendChild(pixSvg(out(a))); host.appendChild(pixSvg(arrow, "arrow"));
+  host.appendChild(pixSvg(out(b))); host.appendChild(pixSvg(arrow, "arrow")); host.appendChild(pixSvg(out(c)));
+})();
 let spriteCount = 0;
 function renderItem(p) {
   if (p.regularPrice && p.price && new Date() > OFFER_END) { p = Object.assign({}, p, { price: p.regularPrice, regularPrice: null }); }
