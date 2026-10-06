@@ -210,13 +210,6 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 16px;
     <div class="catalog" id="catalog"></div>
   </section>
 
-  <section aria-labelledby="h-crew">
-    <h2 id="h-crew">Meet the team</h2>
-    <p class="crew-note">Every skill is a team of 10 specialists. Here is an example run of the Site Builder team, to show who works when. It is an illustration, not live data.</p>
-    <div class="crew" id="crew"></div>
-    <div class="crew-ctrl"><button type="button" id="crew-btn" aria-pressed="false">Pause</button><span class="wave" id="crew-wave" aria-live="polite"></span></div>
-  </section>
-
   <section aria-labelledby="h-how">
     <h2 id="h-how">How it works</h2>
     <ol class="steps">
@@ -481,86 +474,6 @@ if (PROFILE.legal) footer.appendChild(el("div", { text: PROFILE.legal }));
 
 
 
-/* Team demo: 10 pixel specialists, each with a role, worked through in waves like the real team. */
-(function () {
-  const HATS = {
-    crown: ["..Y..Y..Y..", "..YYYYYYY..", "..........."],
-    wizard: ["....Y......", "...YYY.....", "..YYYYY...."],
-    beret: ["...........", "..CCCCCCC..", ".CCCCCCCCC."],
-    tuft: ["..Y.Y.Y...", "...........", "..........."],
-    phones: ["..DDDDDDD..", "..........." , "..........."],
-    spark: ["..Y...Y....", "...Y.Y.....", "....Y......"],
-    bug: ["..D.....D..", "...D...D...", "..........."],
-    cap: ["...........", "..GGGGGGG..", "..........."],
-    lab: ["...........", "..WWWWWWW..", "..WWWWWWW.."],
-    tophat: ["...DDDDD...", "...DDDDD...", "..DDDDDDD.."]
-  };
-  const BODY = [".CCCCCCCCC.", ".CCCCCCCCC.", ".CWDCCCWDC.", ".CCCCCCCCC.", ".CCCDDDCCC.", "..CCCCCCC..", "..CC...CC..", "..DD...DD.."];
-  const TEAM = [
-    { n: "Coordinator", hat: "crown", c: "B", tool: "..W.WWW." , wave: 0, act: "splitting the work" },
-    { n: "Content Strategist", hat: "wizard", c: "T", tool: "..YDDY..", wave: 0, act: "planning sections" },
-    { n: "Copywriter", hat: "beret", c: "P", tool: "..DYYYD.", wave: 1, act: "writing the texts" },
-    { n: "Designer", hat: "tuft", c: "R", tool: "..YDDDD.", wave: 1, act: "choosing the look" },
-    { n: "Coder", hat: "phones", c: "K", tool: "..DDDDD.", wave: 2, act: "building the page" },
-    { n: "Animator", hat: "spark", c: "B", tool: "..Y.Y.Y.", wave: 3, act: "adding motion" },
-    { n: "Bug Scanner", hat: "bug", c: "G", tool: "..DWWD..", wave: 4, act: "hunting bugs" },
-    { n: "Access & SEO", hat: "cap", c: "T", tool: "..WDDW..", wave: 4, act: "checking access" },
-    { n: "Tester", hat: "lab", c: "P", tool: "..GGGG..", wave: 5, act: "clicking through" },
-    { n: "Checker", hat: "tophat", c: "K", tool: "..DYYD..", wave: 6, act: "final check" }
-  ];
-  const COL = { B: "var(--accent)", C: null, D: "#2A1C12", W: "#FFFFFF", Y: "#F2B84B", T: "#3F8F9B", P: "#8E5A9B", R: "#C8453B", K: "#3A4A7A", G: "#5BA37B" };
-  const NS = "http://www.w3.org/2000/svg";
-  function sprite(m) {
-    const rows = HATS[m.hat].concat(BODY).map(function (r) { return r.replace(/C/g, m.c); });
-    const svg = document.createElementNS(NS, "svg");
-    svg.setAttribute("viewBox", "0 0 12 11"); svg.setAttribute("class", "sprite"); svg.setAttribute("aria-hidden", "true");
-    rows.forEach(function (row, y) {
-      for (let x = 0; x < row.length; x++) {
-        const c = COL[row[x]]; if (!c) continue;
-        const r = document.createElementNS(NS, "rect");
-        r.setAttribute("x", x); r.setAttribute("y", y); r.setAttribute("width", 1.02); r.setAttribute("height", 1.02); r.setAttribute("fill", c);
-        svg.appendChild(r);
-      }
-    });
-    for (let i = 0; i < 5; i++) {
-      const ch = m.tool[i + 1] || "."; const c = COL[ch]; if (!c || ch === ".") continue;
-      const r = document.createElementNS(NS, "rect");
-      r.setAttribute("x", 11); r.setAttribute("y", 4 + i); r.setAttribute("width", 1); r.setAttribute("height", 1.02); r.setAttribute("fill", c);
-      svg.appendChild(r);
-    }
-    return svg;
-  }
-  const host = document.getElementById("crew"); if (!host) return;
-  const cards = TEAM.map(function (m) {
-    const st = el("div", { "class": "st", text: "waiting" });
-    const card = el("div", { "class": "mate" }, [sprite(m), el("div", { "class": "nm", text: m.n }), st]);
-    host.appendChild(card); return { m: m, card: card, st: st };
-  });
-  const btn = document.getElementById("crew-btn"), label = document.getElementById("crew-wave");
-  const WAVES = 7, STEP = 2200;
-  let wave = -1, timer = null, paused = false;
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function show(w) {
-    cards.forEach(function (c) {
-      const k = c.m.wave;
-      c.card.classList.toggle("working", k === w);
-      c.card.classList.toggle("done", k < w);
-      c.st.textContent = k === w ? c.m.act + "…" : (k < w ? "done ✓" : "waiting");
-    });
-    label.textContent = w >= WAVES ? "All 10 done" : "Step " + (w + 1) + " of " + WAVES;
-  }
-  function tick() {
-    wave++; if (wave > WAVES + 1) wave = -1;
-    show(wave);
-  }
-  function start() { if (timer) clearInterval(timer); timer = setInterval(tick, STEP); }
-  if (reduce) { show(WAVES); btn.hidden = true; return; }
-  tick(); start();
-  btn.addEventListener("click", function () {
-    paused = !paused; btn.textContent = paused ? "Play" : "Pause"; btn.setAttribute("aria-pressed", String(paused));
-    if (paused) { clearInterval(timer); timer = null; } else start();
-  });
-})();
 </script>
 
 </body>
