@@ -194,6 +194,14 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 16px;
 .how-art svg.arrow { flex: 0 0 clamp(20px, 5vw, 36px); max-width: 36px; filter: none; animation: arrowpulse 1.2s steps(1, end) infinite; }
 @keyframes arrowpulse { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
 @media (prefers-reduced-motion: reduce) { .how-art svg, .how-art svg.arrow { animation: none; } .item, .item:hover { transition: none; transform: none; } .btn { transition: none; } }
+
+.salebar { padding: 0; background: linear-gradient(180deg, var(--accent-hi), var(--accent)); border-bottom: 3px solid var(--accent-lo); box-shadow: 0 6px 16px -6px rgba(0,0,0,.45); font-size: 0.92rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; position: sticky; }
+.salebar::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 35%, rgba(255,255,255,.38) 50%, transparent 65%); transform: translateX(-120%); animation: saleshine 4.5s ease-in-out infinite; pointer-events: none; }
+@keyframes saleshine { 0%, 55% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+.salebar .track span { display: inline-flex; align-items: center; gap: 10px; padding: 12px 22px; }
+.salebar .tag { width: 22px; height: 18px; flex: none; shape-rendering: crispEdges; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25)); }
+.salebar .pct { background: var(--accent-ink); color: var(--accent); padding: 2px 8px; border-radius: 999px; box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+@media (prefers-reduced-motion: reduce) { .salebar::after { animation: none; display: none; } }
 </style>
 </head>
 <body>
@@ -210,7 +218,7 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 16px;
   Polia o tebe (meno, texty, Instagram, TikTok, kontakt, firemné údaje) sú v PROFILE. Prázdne polia sa na stránke nezobrazia.
 -->
 
-<div class="salebar" id="salebar" role="link" tabindex="0" aria-label="Launch sale ends soon. See the skills" hidden><div class="track" id="saletrack"></div></div>
+<div class="salebar" id="salebar" role="link" tabindex="0" aria-label="Launch sale, ends soon. See the skills" hidden><div class="track" id="saletrack"></div></div>
 
 <div class="wrap">
   <header class="top">
@@ -372,10 +380,23 @@ const OFFER_END = new Date("2026-10-31T23:59:59");
   const bar = document.getElementById("salebar");
   if (bar) {
     const t = document.getElementById("saletrack");
-    for (let i = 0; i < 8; i++) {
+    const best = Math.max.apply(null, PRODUCTS.filter(function (x) { return x.price && x.regularPrice && x.regularPrice > x.price; }).map(function (x) { return Math.round((1 - x.price / x.regularPrice) * 100); }).concat([0]));
+    const NS = "http://www.w3.org/2000/svg";
+    const TAG = ["...YYYYYY.", "..YYYYYYYY", ".YYDYYYYYY", "YYYYYYYYYY", ".YYYYYYYYY", "..YYYYYYYY", "...YYYYYY."];
+    function tagIcon() {
+      const svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", "0 0 10 7"); svg.setAttribute("class", "tag"); svg.setAttribute("aria-hidden", "true");
+      TAG.forEach(function (row, y) { for (let x = 0; x < row.length; x++) { if (row[x] === ".") continue;
+        const r = document.createElementNS(NS, "rect"); r.setAttribute("x", x); r.setAttribute("y", y); r.setAttribute("width", 1.02); r.setAttribute("height", 1.02);
+        r.setAttribute("fill", row[x] === "D" ? "#2A1C12" : (y === 0 || x === 0 ? "#FFD98A" : "#F2B84B")); svg.appendChild(r); } });
+      return svg;
+    }
+    for (let i = 0; i < 6; i++) {
       const sp = document.createElement("span");
-      sp.textContent = "Launch sale ends soon · See the skills ↓";
       if (i) sp.setAttribute("aria-hidden", "true");
+      sp.appendChild(tagIcon());
+      sp.appendChild(document.createTextNode("Launch sale"));
+      if (best > 0) { const pc = document.createElement("b"); pc.className = "pct"; pc.textContent = "up to -" + best + "%"; sp.appendChild(pc); }
+      sp.appendChild(document.createTextNode("ends soon \u00B7 see the skills \u2193"));
       t.appendChild(sp);
     }
     bar.addEventListener("click", function () { const c = document.getElementById("catalog"); if (c) c.scrollIntoView({ behavior: "smooth", block: "start" }); });
