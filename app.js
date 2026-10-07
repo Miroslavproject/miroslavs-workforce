@@ -78,6 +78,22 @@ const PRODUCTS = [
       "Previews on a fictional AI model when an image tool is connected, flat mockups otherwise",
       "Original designs only, nothing copied from other brands"
     ]
+  },
+  {
+    id: "video-marketing",
+    name: "Video Marketing",
+    file: "video-marketing.skill",
+    tag: "Marketing",
+    price: 55,
+    regularPrice: 79,
+    offerEnds: "",
+    stripeUrl: "",
+    description: "Tell it what you sell and it plans your marketing video. A team of 10 specialists studies your niche, takes the best ideas from the videos that already work and fixes what viewers complain about, writes the hook and scripts, works out an offer and price that is attractive and still profitable, and prepares the shot list, captions and posting plan.",
+    features: [
+      "A strategist and a marketing director lead the team, a competitor scout studies the best videos in your niche",
+      "3 script versions, each with an ID, plus storyboard, covers and captions",
+      "An offer and price specialist works out what buyers say yes to and what you still earn"
+    ]
   }
 ];
 
@@ -146,7 +162,8 @@ const SPRITES = {
   "clients": ["..Y..Y..Y..", "..YYYYYYY..", ".BBBBBBBBB.", ".BBBBBBBBB.", ".BWDBBBWDB.", ".BBBBBBBBB.", ".BBBDDDBBB.", ".BBBBBBBBB.", "..BBBBBBB..", "..BB...BB..", "..DD...DD.."],
   "clone": [".BBBB...AAAA.", "BBBBBB.AAAAAA", "BDBBDB.ADAADA", "BBBBBB.AAAAAA", "BBDDBB.AADDAA", ".BBBB...AAAA.", ".B..B...A..A.", ".D..D...D..D."],
   "site-builder": ["...YYYYY...", "..YYYYYYY..", ".YYYYYYYYY.", ".BBBBBBBBB.", ".BWDBBBWDB.", ".BBBBBBBBB.", ".BBBDDDBBB.", "..BBBBBBB..", "..BB...BB..", "..DD...DD.."],
-  "clothes-designer": ["...BBBBB...", "..BBBBBBB..", ".BBSSSSSBB.", ".BSWDSWDSB.", ".BSSSSSSSB.", ".BBSDDDSBB.", "BBBBSSSBBBB", "BBBBYBYBBBB", ".BBBBBBBBB.", "..BB...BB..", "..DD...DD.."]
+  "clothes-designer": ["...BBBBB...", "..BBBBBBB..", ".BBSSSSSBB.", ".BSWDSWDSB.", ".BSSSSSSSB.", ".BBSDDDSBB.", "BBBBSSSBBBB", "BBBBYBYBBBB", ".BBBBBBBBB.", "..BB...BB..", "..DD...DD.."],
+  "video-marketing": ["DWDWDWDWDWD", "DDDDDDDDDDD", ".BBBBBBBBB.", ".BWDBBBWDB.", ".BBBBBBBBB.", ".BBBDDDBBB.", ".BBBBYBBBB.", "..BBBBBBB..", "..BB...BB..", "..DD...DD.."]
 };
 /* Shaded pixel renderer: light edge on top and left, darker edge on bottom and right, plus a glossy spot. */
 function mixHex(hex, t) {
@@ -287,7 +304,7 @@ PRODUCTS.forEach(function (p) { catalog.appendChild(renderItem(p)); });
 })();
 
 /* Filter podľa témy sa zobrazí, keď bude v katalógu viac ako 4 skilly. */
-if (PRODUCTS.length > 4) {
+if (PRODUCTS.length > 6) {
   const tags = ["All"].concat(PRODUCTS.map(function (p) { return p.tag; }).filter(function (t, i, a) { return t && a.indexOf(t) === i; }));
   const bar = document.getElementById("filters");
   bar.hidden = false;
