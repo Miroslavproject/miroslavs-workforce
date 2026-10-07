@@ -180,6 +180,13 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 16px;
 .how-art svg:nth-of-type(3) { animation-delay: -1s; }
 .how-art svg.arrow { flex: 0 0 clamp(20px, 5vw, 36px); max-width: 36px; filter: none; animation: arrowpulse 1.2s steps(1, end) infinite; }
 @keyframes arrowpulse { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+/* Prompt Pack add-on strip under each skill */
+.addon { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 4px; padding: 14px 16px; border: 1px dashed var(--accent); border-radius: 8px; background: var(--chip); }
+.addon .a-text { flex: 1 1 320px; min-width: 0; }
+.addon .a-title { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; margin-bottom: 4px; }
+.addon .a-plus { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; background: linear-gradient(180deg, var(--accent-hi), var(--accent)); color: var(--accent-ink); padding: 2px 9px; border-radius: 999px; box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 2px 0 var(--accent-lo); }
+.addon p { margin: 0; color: var(--muted); font-size: 0.92rem; max-width: 62ch; }
+.addon .btn { white-space: nowrap; }
 /* Scroll trail: an orange ball rides down the left edge of the skills and draws a line behind it; it slips behind a card when you leave */
 .catalog { position: relative; }
 .item { position: relative; z-index: 1; }

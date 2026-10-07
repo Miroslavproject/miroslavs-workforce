@@ -1,4 +1,3 @@
-
 /* Údaje o tebe. Prázdne polia sa nezobrazia. */
 const PROFILE = {
   brand: "Miroslavs Workforce",
@@ -24,6 +23,7 @@ const PRODUCTS = [
     regularPrice: 79,
     offerEnds: "",
     stripeUrl: "",
+    addon: { name: "Prompt Pack", price: 5, file: "clients-prompt-pack.txt", stripeUrl: "", text: "33 ready-to-paste prompts, 3 for each of 11 kinds of role. Pick the kind that matches each client the skill creates and paste it into your chat. A text file, sold separately." },
     description: "Build your own empire with a single team. Tell it the job you need done right now and it creates 10 clients, each with their own role. It can run the team too.",
     features: [
       "Splits the job into 10 roles that don't overlap",
@@ -40,6 +40,7 @@ const PRODUCTS = [
     regularPrice: 49,
     offerEnds: "",
     stripeUrl: "",
+    addon: { name: "Prompt Pack", price: 5, file: "clone-prompt-pack.txt", stripeUrl: "", text: "3 ready-to-paste prompts for each of the 10 clients, 30 in total. They push every specialist to check its own work harder before it hands over. A text file you paste into your chat, sold separately." },
     description: "Already have an app or site? Hand it over. Clone scans it, finds bugs, compares it with similar apps and shows what it's missing. Then it builds the improvements you pick. Works as a team of 10 specialists.",
     features: [
       "Works on the app or site you already have: code, a link or screenshots",
@@ -56,6 +57,7 @@ const PRODUCTS = [
     regularPrice: 49,
     offerEnds: "",
     stripeUrl: "",
+    addon: { name: "Prompt Pack", price: 5, file: "site-builder-prompt-pack.txt", stripeUrl: "", text: "3 ready-to-paste prompts for each of the 10 clients, 30 in total. They push every specialist to check its own work harder before it hands over. A text file you paste into your chat, sold separately." },
     description: "Describe the page you need, or hand over the one you already have. A team of 10 specialists plans it, writes the copy, designs it, codes it and adds subtle motion. Then a bug scanner and a tester go through it before you see the result.",
     features: [
       "Plans, writes, designs and codes the page, with gentle animations",
@@ -72,6 +74,7 @@ const PRODUCTS = [
     regularPrice: 79,
     offerEnds: "",
     stripeUrl: "",
+    addon: { name: "Prompt Pack", price: 5, file: "clothes-designer-prompt-pack.txt", stripeUrl: "", text: "3 ready-to-paste prompts for each of the 10 clients, 30 in total. They push every specialist to check its own work harder before it hands over. A text file you paste into your chat, sold separately." },
     description: "Describe your clothing brand and get many versions of tees, hoodies and sets to choose from. A team of 10 specialists researches current style trends, plans the collection, designs original graphics and cuts, and builds a lookbook you can filter and favorite.",
     features: [
       "Many versions of every piece, each with an ID, so you simply pick",
@@ -88,6 +91,7 @@ const PRODUCTS = [
     regularPrice: 79,
     offerEnds: "",
     stripeUrl: "",
+    addon: { name: "Prompt Pack", price: 5, file: "video-marketing-prompt-pack.txt", stripeUrl: "", text: "3 ready-to-paste prompts for each of the 10 clients, 30 in total. They push every specialist to check its own work harder before it hands over. A text file you paste into your chat, sold separately." },
     description: "Tell it what you sell and it plans your marketing video. A team of 10 specialists studies your niche, takes the best ideas from the videos that already work and fixes what viewers complain about, writes the hook and scripts, works out an offer and price that is attractive and still profitable, and prepares the shot list, captions and posting plan.",
     features: [
       "A strategist and a marketing director lead the team, a competitor scout studies the best videos in your niche",
@@ -98,6 +102,7 @@ const PRODUCTS = [
 ];
 
 const FAQ = [
+  { q: "What is the Prompt Pack?", a: "An optional add-on for 5 euros per skill. It is a text file with ready-to-paste prompts for the clients of that skill. You paste them into your chat while a client works. The skill works fine without it." },
   { q: "What do I need to use these skills?", a: "Claude with code execution and file creation turned on. The download page after payment walks you through adding the skill." },
   { q: "How do I get the file?", a: "Right after you pay, you land on a download page with your file and the steps to add it to Claude." },
   { q: "Does Clone copy other apps?", a: "No. It learns ideas and feature lists from similar apps, never their code, text, images or design." },
@@ -270,7 +275,21 @@ function renderItem(p) {
     el("p", { text: p.description }),
     list
   ]);
-  const item = el("article", { "class": "item", "data-tag": p.tag || "" }, [info, buy]);
+  const kids = [info, buy];
+  if (p.addon) {
+    const a = p.addon;
+    const act = a.stripeUrl
+      ? el("a", { "class": "btn", href: a.stripeUrl, target: "_blank", rel: "noopener noreferrer", text: "Add Prompt Pack" })
+      : el("button", { "class": "btn", type: "button", disabled: "", text: "Coming soon" });
+    kids.push(el("div", { "class": "addon" }, [
+      el("div", { "class": "a-text" }, [
+        el("div", { "class": "a-title" }, [el("span", { text: a.name }), el("span", { "class": "a-plus", text: "+" + CURRENCY + a.price })]),
+        el("p", { text: a.text })
+      ]),
+      act
+    ]));
+  }
+  const item = el("article", { "class": "item", "data-tag": p.tag || "" }, kids);
   return item;
 }
 
@@ -303,7 +322,7 @@ PRODUCTS.forEach(function (p) { catalog.appendChild(renderItem(p)); });
   layout(); update();
 })();
 
-/* Filter podľa témy sa zobrazí, keď bude v katalógu viac ako 4 skilly. */
+/* Filter podľa témy sa zobrazí, keď bude v katalógu viac ako 6 skillov. */
 if (PRODUCTS.length > 6) {
   const tags = ["All"].concat(PRODUCTS.map(function (p) { return p.tag; }).filter(function (t, i, a) { return t && a.indexOf(t) === i; }));
   const bar = document.getElementById("filters");
