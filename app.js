@@ -23,7 +23,7 @@ const PRODUCTS = [
     regularPrice: 79,
     offerEnds: "",
     stripeUrl: "",
-    addon: { name: "Prompt Pack", price: 5, file: "clients-prompt-pack.txt", stripeUrl: "", text: "33 ready-to-paste prompts, 3 for each of 11 kinds of role. Pick the kind that matches each client the skill creates and paste it into your chat. A text file, sold separately." },
+    addon: { name: "Prompt Pack", price: 5, file: "clients-prompt-pack.txt", stripeUrl: "", text: "30 ready-to-paste prompts, 3 for each of 10 kinds of role. Pick the kind that matches each client the skill creates and paste it into your chat. A text file, sold separately." },
     description: "Build your own empire with a single team. Tell it the job you need done right now and it creates 10 clients, each with their own role. It can run the team too.",
     features: [
       "Splits the job into 10 roles that don't overlap",
