@@ -23,7 +23,7 @@ const PRODUCTS = [
     regularPrice: 79,
     offerEnds: "",
     stripeUrl: "",
-    addon: { name: "Prompt Pack", price: 5, file: "clients-prompt-pack.txt", stripeUrl: "", text: "The skill with 20 prompts built in, 2 for each of 10 kinds of role. It gives the right two to every client it creates. Nothing to copy or paste. Costs 5 euros more than the skill alone." },
+    addon: { name: "Prompt Pack", price: 5, file: "clients-prompt-pack.txt", stripeUrl: "", text: "The skill with 20 prompts built in, 2 for each of 10 kinds of role. It gives the right two to every client it creates. Nothing to copy or paste." },
     description: "Build your own empire with a single team. Tell it the job you need done right now and it creates 10 clients, each with their own role. It can run the team too.",
     features: [
       "Splits the job into 10 roles that don't overlap",
@@ -40,7 +40,7 @@ const PRODUCTS = [
     regularPrice: 49,
     offerEnds: "",
     stripeUrl: "",
-    addon: { name: "Prompt Pack", price: 5, file: "clone-prompt-pack.txt", stripeUrl: "", text: "The skill with 2 prompts built into each of the 10 clients, 20 in total. They push every specialist to check its own work harder before it hands over. Nothing to copy or paste. Costs 5 euros more than the skill alone." },
+    addon: { name: "Prompt Pack", price: 5, file: "clone-prompt-pack.txt", stripeUrl: "", text: "The skill with 2 prompts built into each of the 10 clients, 20 in total. They push every specialist to check its own work harder before it hands over. Nothing to copy or paste." },
     description: "Already have an app or site? Hand it over. Clone scans it, finds bugs, compares it with similar apps and shows what it's missing. Then it builds the improvements you pick. Works as a team of 10 specialists.",
     features: [
       "Works on the app or site you already have: code, a link or screenshots",
@@ -57,7 +57,7 @@ const PRODUCTS = [
     regularPrice: 49,
     offerEnds: "",
     stripeUrl: "",
-    addon: { name: "Prompt Pack", price: 5, file: "site-builder-prompt-pack.txt", stripeUrl: "", text: "The skill with 2 prompts built into each of the 10 clients, 20 in total. They push every specialist to check its own work harder before it hands over. Nothing to copy or paste. Costs 5 euros more than the skill alone." },
+    addon: { name: "Prompt Pack", price: 5, file: "site-builder-prompt-pack.txt", stripeUrl: "", text: "The skill with 2 prompts built into each of the 10 clients, 20 in total. They push every specialist to check its own work harder before it hands over. Nothing to copy or paste." },
     description: "Describe the page you need, or hand over the one you already have. A team of 10 specialists plans it, writes the copy, designs it, codes it and adds subtle motion. Then a bug scanner and a tester go through it before you see the result.",
     features: [
       "Plans, writes, designs and codes the page, with gentle animations",
@@ -74,7 +74,7 @@ const PRODUCTS = [
     regularPrice: 79,
     offerEnds: "",
     stripeUrl: "",
-    addon: { name: "Prompt Pack", price: 5, file: "clothes-designer-prompt-pack.txt", stripeUrl: "", text: "The skill with 2 prompts built into each of the 10 clients, 20 in total. They push every specialist to check its own work harder before it hands over. Nothing to copy or paste. Costs 5 euros more than the skill alone." },
+    addon: { name: "Prompt Pack", price: 5, file: "clothes-designer-prompt-pack.txt", stripeUrl: "", text: "The skill with 2 prompts built into each of the 10 clients, 20 in total. They push every specialist to check its own work harder before it hands over. Nothing to copy or paste." },
     description: "Describe your clothing brand and get many versions of tees, hoodies and sets to choose from. A team of 10 specialists researches current style trends, plans the collection, designs original graphics and cuts, and builds a lookbook you can filter and favorite.",
     features: [
       "Many versions of every piece, each with an ID, so you simply pick",
@@ -91,7 +91,7 @@ const PRODUCTS = [
     regularPrice: 79,
     offerEnds: "",
     stripeUrl: "",
-    addon: { name: "Prompt Pack", price: 5, file: "video-marketing-prompt-pack.txt", stripeUrl: "", text: "The skill with 2 prompts built into each of the 10 clients, 20 in total. They push every specialist to check its own work harder before it hands over. Nothing to copy or paste. Costs 5 euros more than the skill alone." },
+    addon: { name: "Prompt Pack", price: 5, file: "video-marketing-prompt-pack.txt", stripeUrl: "", text: "The skill with 2 prompts built into each of the 10 clients, 20 in total. They push every specialist to check its own work harder before it hands over. Nothing to copy or paste." },
     description: "Tell it what you sell and it plans your marketing video. A team of 10 specialists studies your niche, takes the best ideas from the videos that already work and fixes what viewers complain about, writes the hook and scripts, works out an offer and price that is attractive and still profitable, and prepares the shot list, captions and posting plan.",
     features: [
       "A strategist and a marketing director lead the team, a competitor scout studies the best videos in your niche",
