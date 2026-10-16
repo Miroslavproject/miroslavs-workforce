@@ -374,6 +374,7 @@ if (PROFILE.legal) footer.appendChild(el("div", { text: PROFILE.legal }));
   function el(tag, cls, attrs) { const e = document.createElement(tag); if (cls) e.className = cls; if (attrs) Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); }); return e; }
   function pad(n) { return (n < 10 ? "0" : "") + n; }
   function firstSentences(t, k) { const s = String(t || ""), m = s.match(/[^.!?]+[.!?]+(?:\s+|$)/g); return m ? m.slice(0, k).join("").trim() : s; }
+  function brief(t) { var s = firstSentences(t, 1); if (s.length < 45) s = firstSentences(t, 2); if (s.length > 90) { s = s.slice(0, 90); s = s.slice(0, s.lastIndexOf(" ")).replace(/[,;:]$/, "") + "\u2026"; } return s; }
   function arrowText(node, text) { node.textContent = text + " "; const a = document.createElement("span"); a.setAttribute("aria-hidden", "true"); a.textContent = "→"; node.appendChild(a); }
   /* Make every catalog card reachable by a link. */
   document.querySelectorAll(".item").forEach(function (it, i) { const h = it.querySelector("h3"); const p = items.filter(function (x) { return h && x.name === h.textContent; })[0]; if (p) it.id = "skill-" + p.id; it.style.setProperty("--i", i); });
@@ -400,7 +401,7 @@ if (PROFILE.legal) footer.appendChild(el("div", { text: PROFILE.legal }));
     items.forEach(function (p) {
       const row = el("article", "scn-row"), im = el("img", "scn-img", { alt: "", "aria-hidden": "true", loading: "lazy" }); im.src = SPRITE_IMG[p.id];
       const c = el("div", "scn-copy"), h = el("h2", "scn-name"), l = el("p", "scn-line"), f = el("p", "scn-feats"), a = el("a", "scn-link", { href: targetOf(p) });
-      h.textContent = p.name; l.textContent = firstSentences(p.description, 2); f.textContent = (p.features || []).slice(0, 3).join(" / "); arrowText(a, "See this skill");
+      h.textContent = p.name; l.textContent = brief(p.description); f.textContent = (p.features || []).slice(0, 3).join(" / "); arrowText(a, "See this skill");
       c.appendChild(h); c.appendChild(l); c.appendChild(f); c.appendChild(a); row.appendChild(im); row.appendChild(c); scn.appendChild(row);
     });
   }
@@ -414,7 +415,7 @@ if (PROFILE.legal) footer.appendChild(el("div", { text: PROFILE.legal }));
   function anchorY() { return scn.getBoundingClientRect().top + window.pageYOffset - barH(); }
   function show(i, animate) {
     const p = items[i]; step = i; scn.setAttribute("data-step", String(i));
-    img.src = SPRITE_IMG[p.id]; name.textContent = p.name; line.textContent = firstSentences(p.description, 2);
+    img.src = SPRITE_IMG[p.id]; name.textContent = p.name; line.textContent = brief(p.description);
     feats.textContent = (p.features || []).slice(0, 3).join(" / "); more.setAttribute("href", targetOf(p));
     count.textContent = pad(i + 1) + " / " + pad(N); scn.style.setProperty("--p", (i / Math.max(1, LAST)).toFixed(3));
     arrowText(skip, i === LAST ? "Continue" : "Skip intro");

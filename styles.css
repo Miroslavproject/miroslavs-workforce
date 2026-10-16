@@ -230,7 +230,7 @@ html.scn-locked { overscroll-behavior: none; }
 .scn-fly { width: 100%; }
 .scn-img { width: 100%; height: auto; display: block; filter: drop-shadow(0 12px 10px rgba(0,0,0,.18)); }
 .scn-name { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.6rem, 14vw, 3.4rem); line-height: .95; letter-spacing: -.04em; margin: 0 0 14px; color: var(--name-color); text-shadow: var(--name-glow); text-wrap: balance; overflow-wrap: anywhere; }
-.scn-line { margin: 0 0 12px; color: var(--fg); opacity: .85; font-size: clamp(1rem, 4.2vw, 1.15rem); max-width: 42ch; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
+.scn-line { margin: 0 0 12px; color: var(--fg); opacity: .85; font-size: clamp(1rem, 4.2vw, 1.15rem); max-width: 42ch; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
 .scn-feats { margin: 0 0 14px; font: 500 .78rem var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .scn-link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; color: var(--fg); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 6px; transition: transform .24s var(--ease-cine); }
 .scn-link:hover { transform: translateX(6px); }
