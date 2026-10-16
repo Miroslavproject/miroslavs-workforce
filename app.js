@@ -121,6 +121,58 @@ function el(tag, attrs, children) {
 
 document.getElementById("brand").textContent = PROFILE.name ? PROFILE.brand + " · " + PROFILE.name : PROFILE.brand;
 document.getElementById("headline").textContent = "Skills for Claude that work as a team";
+/* Neon ribbon that flies around the headline, line by line. */
+(function () {
+  const hero = document.querySelector(".hero"), h1 = document.getElementById("headline");
+  if (!hero || !h1 || !h1.firstChild) return;
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg"); svg.setAttribute("class", "neon"); svg.setAttribute("aria-hidden", "true");
+  const track = document.createElementNS(NS, "path"), glow = document.createElementNS(NS, "path"), core = document.createElementNS(NS, "path");
+  track.setAttribute("class", "neon-track"); glow.setAttribute("class", "neon-glow"); core.setAttribute("class", "neon-core");
+  [glow, core].forEach(function (p) { p.setAttribute("pathLength", "1000"); });
+  svg.appendChild(track); svg.appendChild(glow); svg.appendChild(core); hero.insertBefore(svg, hero.firstChild);
+  function lines() {
+    const hr = hero.getBoundingClientRect(), node = h1.firstChild, out = [];
+    const rg = document.createRange(), txt = node.textContent;
+    for (let i = 0; i < txt.length; i++) {
+      if (txt[i] === " ") continue;
+      rg.setStart(node, i); rg.setEnd(node, i + 1);
+      const r = rg.getClientRects()[0]; if (!r) continue;
+      const top = Math.round(r.top - hr.top), cur = out[out.length - 1];
+      if (cur && Math.abs(cur.t - top) < r.height * 0.5) { cur.l = Math.min(cur.l, r.left - hr.left); cur.r = Math.max(cur.r, r.right - hr.left); }
+      else out.push({ t: top, b: r.bottom - hr.top, l: r.left - hr.left, r: r.right - hr.left });
+    }
+    return out;
+  }
+  function wave(x0, x1, y, amp) {
+    const n = Math.max(2, Math.round(Math.abs(x1 - x0) / 70)), dx = (x1 - x0) / n; let d = "";
+    for (let i = 0; i < n; i++) { const a = x0 + dx * i, b = x0 + dx * (i + 1), s = i % 2 ? -amp : amp;
+      d += " C " + (a + dx / 3) + " " + (y + s) + " " + (a + 2 * dx / 3) + " " + (y - s) + " " + b + " " + y; }
+    return d;
+  }
+  function build() {
+    const L = lines(); if (!L.length) return;
+    const hr = hero.getBoundingClientRect(); svg.setAttribute("viewBox", "0 0 " + hr.width + " " + hr.height); svg.setAttribute("width", hr.width); svg.setAttribute("height", hr.height);
+    const ys = L.map(function (l) { return l.b - (l.b - l.t) * 0.16; });
+    let d = "M " + (L[0].l - 30) + " " + (ys[0] - 4) + " C " + (L[0].l - 10) + " " + (ys[0]) + " " + (L[0].l - 6) + " " + ys[0] + " " + L[0].l + " " + ys[0];
+    for (let i = 0; i < L.length; i++) {
+      const ltr = i % 2 === 0, a = ltr ? L[i].l : L[i].r, b = ltr ? L[i].r : L[i].l;
+      if (i > 0) { /* already at start of this line */ }
+      d += wave(a, b, ys[i], 10);
+      if (i < L.length - 1) {
+        const out = 90, sx = b + (ltr ? 10 : -10), nx = ltr ? L[i + 1].r : L[i + 1].l, dir = ltr ? 1 : -1;
+        d += " C " + (sx + dir * out) + " " + ys[i] + " " + (nx + dir * out) + " " + ys[i + 1] + " " + nx + " " + ys[i + 1];
+      } else {
+        const dir = ltr ? 1 : -1; d += " C " + (b + dir * 40) + " " + ys[i] + " " + (b + dir * 60) + " " + (ys[i] - 30) + " " + (b + dir * 90) + " " + (ys[i] - 46);
+      }
+    }
+    [track, glow, core].forEach(function (p) { p.setAttribute("d", d); });
+  }
+  build();
+  if (window.ResizeObserver) new ResizeObserver(build).observe(hero); else window.addEventListener("resize", build);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(build);
+})();
+
 document.getElementById("tagline").textContent = PROFILE.tagline;
 
 const social = document.getElementById("social");
