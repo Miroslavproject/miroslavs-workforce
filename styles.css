@@ -140,7 +140,7 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 16px;
 
 .head { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 10px; }
 .head .file { margin-bottom: 0; }
-.sprite { width: 120px; height: auto; flex: none; animation: spritebob 1.2s steps(1, end) infinite; }
+.sprite { width: 80px; height: auto; flex: none; animation: spritebob 1.2s steps(1, end) infinite; }
 @keyframes spritebob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 @media (prefers-reduced-motion: reduce) { .sprite { animation: none; } }
 
