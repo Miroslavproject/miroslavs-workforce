@@ -365,6 +365,48 @@ FAQ.forEach(function (f) {
 const footer = document.getElementById("footer");
 footer.appendChild(el("div", { text: "Digital products. Payments are processed by Stripe." }));
 if (PROFILE.legal) footer.appendChild(el("div", { text: PROFILE.legal }));
-
-
-
+/* Showcase: each skill's mascot flies in from the left, shows what it does, then flies back and the next one comes. */
+(function () {
+  const hero = document.querySelector(".hero"); if (!hero || !Array.isArray(PRODUCTS) || !PRODUCTS.length) return;
+  const items = PRODUCTS.filter(function (p) { return SPRITE_IMG[p.id]; }); if (!items.length) return;
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function el(tag, cls, attrs) { const e = document.createElement(tag); if (cls) e.className = cls; if (attrs) Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); }); return e; }
+  const stage = el("div", "stage", { role: "region", "aria-roledescription": "carousel", "aria-label": "The skills" });
+  const card = el("div", "stage-card"), fly = el("div", "stage-fly"), img = el("img", "stage-img", { alt: "", "aria-hidden": "true" });
+  fly.appendChild(img);
+  const txt = el("div", "stage-text", { "aria-live": "polite" }), num = el("span", "stage-num"), name = el("h3", "stage-name"), line = el("p", "stage-line"), more = el("a", "btn stage-more", { href: "#skilly" });
+  more.textContent = "See this skill"; txt.appendChild(num); txt.appendChild(name); txt.appendChild(line); txt.appendChild(more);
+  card.appendChild(fly); card.appendChild(txt);
+  const ctl = el("div", "stage-ctl"), prev = el("button", "stage-btn", { type: "button", "aria-label": "Previous skill" }), next = el("button", "stage-btn", { type: "button", "aria-label": "Next skill" }), dots = el("div", "stage-dots");
+  prev.textContent = "←"; next.textContent = "→";
+  const dotEls = items.map(function (p, i) { const d = el("button", "stage-dot", { type: "button", "aria-label": p.name }); d.addEventListener("click", function () { go(i); }); dots.appendChild(d); return d; });
+  ctl.appendChild(prev); ctl.appendChild(dots); ctl.appendChild(next); stage.appendChild(card); stage.appendChild(ctl); hero.appendChild(stage);
+  let cur = -1, timer = null, busy = false, paused = false;
+  function fill(i) {
+    const p = items[i]; img.src = SPRITE_IMG[p.id]; num.textContent = (i + 1) + " / " + items.length; name.textContent = p.name;
+    line.textContent = String(p.description || "").split(/(?<=[.!?])\s/)[0];
+    dotEls.forEach(function (d, k) { d.classList.toggle("on", k === i); d.setAttribute("aria-current", k === i ? "true" : "false"); });
+  }
+  function schedule() { clearTimeout(timer); if (reduce || paused) return; timer = setTimeout(function () { go((cur + 1) % items.length); }, 4600); }
+  function go(i) {
+    if (busy || i === cur) return; busy = true; clearTimeout(timer);
+    const enter = function () { cur = i; fill(i); card.classList.remove("out"); card.classList.add("in"); setTimeout(function () { card.classList.remove("in"); busy = false; schedule(); }, reduce ? 0 : 900); };
+    if (cur < 0 || reduce) { enter(); return; }
+    card.classList.add("out"); setTimeout(enter, 480);
+  }
+  prev.addEventListener("click", function () { go((cur - 1 + items.length) % items.length); });
+  next.addEventListener("click", function () { go((cur + 1) % items.length); });
+  stage.addEventListener("mouseenter", function () { paused = true; clearTimeout(timer); });
+  stage.addEventListener("mouseleave", function () { paused = false; schedule(); });
+  stage.addEventListener("focusin", function () { paused = true; clearTimeout(timer); });
+  stage.addEventListener("focusout", function () { paused = false; schedule(); });
+  card.addEventListener("pointermove", function (e) { const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; img.style.transform = "rotateY(" + (x * 22) + "deg) rotateX(" + (-y * 18) + "deg)"; });
+  card.addEventListener("pointerleave", function () { img.style.transform = ""; });
+  fly.addEventListener("click", function () { fly.classList.remove("hop"); void fly.offsetWidth; fly.classList.add("hop"); });
+  go(0);
+  /* Cards rise into view while scrolling. */
+  if ("IntersectionObserver" in window && !reduce) {
+    const io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("shown"); io.unobserve(e.target); } }); }, { threshold: .12 });
+    document.querySelectorAll(".item, section > h2").forEach(function (n) { n.classList.add("reveal"); io.observe(n); });
+  }
+})();
