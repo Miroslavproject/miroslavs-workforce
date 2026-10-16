@@ -380,7 +380,7 @@ if (PROFILE.legal) footer.appendChild(el("div", { text: PROFILE.legal }));
   const ctl = el("div", "stage-ctl"), prev = el("button", "stage-btn", { type: "button", "aria-label": "Previous skill" }), next = el("button", "stage-btn", { type: "button", "aria-label": "Next skill" }), dots = el("div", "stage-dots");
   prev.textContent = "←"; next.textContent = "→";
   const dotEls = items.map(function (p, i) { const d = el("button", "stage-dot", { type: "button", "aria-label": p.name }); dots.appendChild(d); return d; });
-  ctl.appendChild(prev); ctl.appendChild(dots); ctl.appendChild(next); stage.appendChild(card); stage.appendChild(ctl); hero.appendChild(stage);
+  ctl.appendChild(prev); ctl.appendChild(dots); ctl.appendChild(next); stage.appendChild(card); hero.appendChild(stage);
   const reduceMotion = reduce;
   const scene = document.createElement("div"), pin = document.createElement("div");
   scene.className = "scene"; pin.className = "scene-pin"; hero.parentNode.insertBefore(scene, hero); scene.appendChild(pin); pin.appendChild(hero);
