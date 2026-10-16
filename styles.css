@@ -211,12 +211,3 @@ footer { border-top: 1px solid var(--line); padding-top: 20px; margin-top: 16px;
 .salebar .pct { background: var(--accent-ink); color: var(--accent); padding: 2px 8px; border-radius: 999px; box-shadow: 0 2px 0 rgba(0,0,0,.25); }
 @media (prefers-reduced-motion: reduce) { .salebar::after { animation: none; display: none; } }
 
-.hero { overflow-x: clip; }
-.neon { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 0; }
-.hero h1, .hero p, .hero .cta { position: relative; z-index: 1; }
-.neon path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.neon-track { stroke: #FF7A1A; stroke-width: 2; opacity: .22; }
-.neon-glow { stroke: #FF7A1A; stroke-width: 16; opacity: .6; stroke-dasharray: 260 740; filter: blur(7px); animation: neonfly 7s linear infinite; }
-.neon-core { stroke: #FFD9B0; stroke-width: 5; stroke-dasharray: 260 740; filter: drop-shadow(0 0 4px #FF7A1A) drop-shadow(0 0 10px #FF5A00); animation: neonfly 7s linear infinite; }
-@keyframes neonfly { from { stroke-dashoffset: 260; } to { stroke-dashoffset: -740; } }
-@media (prefers-reduced-motion: reduce) { .neon-glow, .neon-core { animation: none; stroke-dasharray: none; opacity: .5; } }
