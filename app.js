@@ -484,7 +484,7 @@ if (PROFILE.legal) footer.appendChild(el("div", { text: PROFILE.legal }));
     if (prevTop !== null && now > blockUntil) {
       const gesture = now - gestureAt < 1200;
       if (prevTop > b + 1 && r.top <= b + 1 && step < LAST) { if (gesture && fits()) { show(0, false); lockOn(); } else if (!gesture) { done(); } }   /* walked in from above (not a link, find or reload jump) */
-      else if (gesture && prevTop < b - 1 && r.top >= b - 1 && step === LAST) { lockOn(); }                                           /* came back from below */
+      /* scrolling back up: stays on the last skill, never locks again */
     }
     prevTop = r.top; prevBottom = r.bottom;
   }
