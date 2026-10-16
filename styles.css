@@ -289,3 +289,17 @@ html.scn-locked { overscroll-behavior: none; }
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
 .reveal.shown { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+/* Neon that travels around the price card */
+@property --spin { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.price-box.glow::after, :root:not([data-theme="light"]) .price-box.glow::after, :root[data-theme="dark"] .price-box.glow::after {
+  border: 0; box-shadow: none; opacity: 1; padding: 2px; box-sizing: border-box;
+  background: conic-gradient(from var(--spin), transparent 0 55%, var(--neon) 80%, #fff 92%, var(--neon) 96%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  filter: drop-shadow(0 0 5px var(--neon)) drop-shadow(0 0 14px var(--neon));
+  animation: neonspin 3.2s linear infinite; animation-delay: calc(var(--i, 0) * -.7s);
+}
+@keyframes neonspin { to { --spin: 360deg; } }
+.item:hover .price-box.glow::after, .item:focus-within .price-box.glow::after { animation-play-state: running; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .price-box.glow::after { animation: none; opacity: .6; } }
